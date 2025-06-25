@@ -1,6 +1,6 @@
-# 📚 KIIT EduBuddy – Smart Academic Assistant Powered by TinyLlama
+# 📚 KIIT EDUBUDDY – Smart Academic Assistant Powered by TinyLlama
 
-**EduBuddy** is an AI-powered academic assistant built to streamline access to exam-focused study materials, providing students and educators with insightful, structured, and categorized question data. Leveraging NLP and fine-tuned language models, it enhances learning outcomes and simplifies exam preparation.
+**EDUBUDDY** is an AI-powered academic assistant built to streamline access to exam-focused study materials, providing students and educators with insightful, structured, and categorized question data. Leveraging NLP and fine-tuned language models, it enhances learning outcomes and simplifies exam preparation.
 
 ---
 
