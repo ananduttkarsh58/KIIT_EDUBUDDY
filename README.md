@@ -59,6 +59,8 @@ Base Model: TinyLlama-1.1B-Chat
 Data: Extracted and preprocessed past KIIT exam papers
 Training Strategy: Instruction tuning with domain-specific prompts
 
+Contributors: Uttkarsh Anand, Abhishree Bhadra, Ananya Srivastava, Ananya Dash.
+
 
 
 
