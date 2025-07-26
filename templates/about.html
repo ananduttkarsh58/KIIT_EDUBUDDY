@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - EduBuddy</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #0f3d3e, #1e5128, #4e9f3d);
+            color: white;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        /* Section Titles */
+        h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid white;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        /* Content */
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* Contributors */
+        .contributors {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .contributor {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .contributor:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>About Us</header>
+
+    <div class="container">
+        <h2>Project Overview</h2>
+        <p>
+            In the digital age, students often struggle to find relevant study materials and previous year question papers for effective exam preparation. 
+            <strong>EduBuddy</strong> is an AI-powered academic assistant that simplifies this process using <strong>Natural Language Processing (NLP)</strong> and <strong>Machine Learning</strong>.
+        </p>
+        <p>
+            Built on a fine-tuned <strong>TinyLlama GPT-based model</strong>, EduBuddy provides:
+            <ul style="list-style-type: none; padding: 0;">
+                <li>✅ Categorized responses (conceptual, application-based, FAQs)</li>
+                <li>✅ Features like query search, history, favorites, text-to-voice</li>
+                <li>✅ Insights for educators to analyze recurring question patterns</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>Our Mission</h2>
+        <p>
+            EduBuddy is designed to make exam preparation smarter and more efficient by:
+            <ul style="list-style-type: none; padding: 0;">
+                <li>📘 Offering structured, data-driven insights for students</li>
+                <li>🧑‍🏫 Helping educators streamline question analysis</li>
+                <li>🎙️ Enhancing accessibility with voice-to-text and analytics dashboards</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>Project Contributors</h2>
+        <div class="contributors">
+            <div class="contributor">Abhishree Bhadra</div>
+            <div class="contributor">Ananya Srivastava</div>
+            <div class="contributor">Ananya Dash</div>
+            <div class="contributor">Utkarsh Anand</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 EduBuddy | Transforming the way students learn 📚</p>
+    </footer>
+
+</body>
+</html>

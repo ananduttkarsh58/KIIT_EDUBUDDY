@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIIT EDU BUDDY</title>
+    <link rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background-color: #222;
+            color: white;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2a9d47;
+            color: white;
+            padding: 15px 20px;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        aside, .chatbot {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            flex: 1 1 300px;
+            margin: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode aside, .dark-mode .chatbot {
+            background: #333;
+            color: white;
+        }
+        #chatbox {
+            min-height: 300px;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow-y: auto;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .dark-mode #chatbox {
+            background: #444;
+        }
+        .message {
+            max-width: 70%;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to right, #4f6b38, #a8e063);
+        }
+        .user {
+            align-self: flex-end;
+        }
+        .bot {
+            background: #ffffff;
+            align-self: flex-start;
+        }
+        .dark-mode .user {
+            background: linear-gradient(to right, #4caf50, #388e3c);
+            color: white;
+        }
+        .dark-mode .bot {
+            background: #666;
+            color: white;
+        }
+        .star-icon {
+            font-size: 18px;
+            position: absolute;
+            bottom: 5px;
+            right: 8px;
+            cursor: pointer;
+            color: #888;
+        }
+        .starred {
+            color: #FFD700;
+        }
+        input, button {
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            background: #2a9d47;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .quick-questions button {
+            margin: 5px;
+            background: #ddd;
+            color: black;
+        }
+        .dark-mode .quick-questions button {
+            background: #555;
+            color: white;
+        }
+        .typing-indicator {
+            display: inline-block;
+            padding: 10px;
+            background: transparent;
+            border-radius: 10px;
+            font-style: italic;
+            color: #555;
+            margin: 5px;
+            max-width: 70%;
+        }
+        .typing-indicator::after {
+            content: ' .';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ' .'; }
+            40% { content: ' ..'; }
+            60% { content: ' ...'; }
+            100% { content: ' .'; }
+        }
+        .save-history-btn {
+            margin-left: 10px;
+            padding: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .save-history-btn:hover {
+            background-color: #005f73;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">KIIT EDU BUDDY</div>
+        <nav>
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('analysis') }}">Analysis Report</a>
+            <a href="#" onclick="toggleDarkMode()">Toggle Dark Mode</a>
+            <a href="#" onclick="logout()">Logout</a>
+            <span id="userEmail"></span>
+        </nav>
+    </header>
+    
+    <main>
+        <aside>
+            <h2>History</h2>
+            <ul id="historyList"></ul>
+            <h2>Favorites</h2>
+            <ul id="favoritesList"></ul>
+        </aside>
+        <section class="chatbot">
+            <h2>Chatbot Responses</h2>
+            <div id="chatbox"></div>
+            <input type="text" id="userInput" placeholder="Type your question here ..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+            <button onclick="saveResponse()">💾 Save Response</button>
+            <div class="quick-questions">
+                <button onclick="quickQuestion('library hours')">Library Hours</button>
+                <button onclick="quickQuestion('scholarships')">Scholarships</button>
+                <button onclick="quickQuestion('internships')">Internships</button>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Contact: support@kiitedubuddy.com | Phone: +91 123 456 7890</p>
+    </footer>
+    
+    <script>
+        // --- Dark Mode ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('dark-mode', document.body.classList.contains('dark-mode'));
+        }
+
+        window.onload = function () {
+            if (localStorage.getItem('dark-mode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        };
+
+        // --- Logout ---
+        function logout() {
+            fetch('/logout', { method: 'POST' }) // Changed to POST for better practice
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        // Handle cases where redirect doesn't happen, e.g., show a message
+                        window.location.href = "/"; 
+                    }
+                })
+                .catch(error => console.error('Logout failed:', error));
+        }
+
+        // --- Chat Messaging ---
+        function sendMessage() {
+            let userInput = document.getElementById("userInput").value.trim();
+            if (userInput === "") return;
+
+            appendMessage(userInput, "user");
+            document.getElementById("userInput").value = "";
+
+            const typingDiv = document.createElement("div");
+            typingDiv.className = "message bot typing-indicator";
+            typingDiv.textContent = "Typing";
+            document.getElementById("chatbox").appendChild(typingDiv);
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                typingDiv.remove();
+                let botResponse = data.response || "Sorry, I couldn't process that.";
+                appendMessage(botResponse, "bot");
+            })
+            .catch(error => {
+                typingDiv.remove();
+                console.error("Error fetching chat response:", error);
+                appendMessage("Error: Unable to fetch response.", "bot");
+            });
+        }
+
+        function appendMessage(message, sender) {
+            const chatbox = document.getElementById("chatbox");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = `message ${sender}`;
+            msgDiv.textContent = message;
+
+            if (sender === "user" || sender === "bot") {
+                const starIcon = document.createElement("span");
+                starIcon.className = "star-icon";
+                starIcon.innerHTML = "&#9733;";
+                starIcon.onclick = () => toggleStar(starIcon, message);
+                msgDiv.appendChild(starIcon);
+
+                const saveButton = document.createElement("button");
+                saveButton.className = "save-history-btn";
+                saveButton.textContent = "Save to History";
+                saveButton.onclick = () => saveToHistory(message);
+                msgDiv.appendChild(saveButton);
+            }
+
+            chatbox.appendChild(msgDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function quickQuestion(question) {
+            document.getElementById("userInput").value = question;
+            sendMessage();
+        }
+
+        // --- History and Favorites ---
+        function saveToHistory(message) {
+            const historyList = document.getElementById("historyList");
+            const existingItems = Array.from(historyList.children).map(li => li.textContent.trim());
+            if (existingItems.includes(message)) return;
+
+            const newHistoryItem = document.createElement("li");
+            newHistoryItem.textContent = message;
+            historyList.appendChild(newHistoryItem);
+        }
+
+        function toggleStar(icon, message) {
+            icon.classList.toggle('starred');
+            if (icon.classList.contains('starred')) {
+                addToFavorites(message);
+            } else {
+                removeFromFavorites(message);
+            }
+        }
+
+        function addToFavorites(message) {
+            const favoritesList = document.getElementById("favoritesList");
+            const existingItems = Array.from(favoritesList.children).map(li => li.textContent.trim());
+            if (existingItems.includes(message)) return;
+
+            const newFavorite = document.createElement("li");
+            newFavorite.textContent = message;
+            favoritesList.appendChild(newFavorite);
+        }
+
+        function removeFromFavorites(message) {
+            let favoritesList = document.getElementById("favoritesList");
+            let items = Array.from(favoritesList.children);
+            items.forEach(item => {
+                if (item.textContent === message) {
+                    favoritesList.removeChild(item);
+                }
+            });
+        }
+
+        // --- Save Response to File ---
+        function saveResponse() {
+            const botMessages = document.querySelectorAll(".bot");
+            if (botMessages.length === 0) {
+                alert("No response to save yet.");
+                return;
+            }
+
+            const lastBotMessage = botMessages[botMessages.length - 1].textContent;
+            const blob = new Blob([lastBotMessage], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "bot_response.txt";
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

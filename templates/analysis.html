@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0f3d3e, #1e5128, #4e9f3d);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .gallery a {
+            display: block;
+            outline: none;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .gallery img:hover,
+        .gallery a:focus img {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out;
+            cursor: grab;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Question Data Analysis</h1>
+    <div class="gallery">
+        {% for img_name, alt_text in [
+            ('questions_by_year.png', 'Questions by Year'),
+            ('question_types_distribution.png', 'Question Types Distribution'),
+            ('question_type_distribution_bar.png', 'Question Type Distribution Bar'),
+            ('top_10_subjects.png', 'Top 10 Subjects'),
+            ('question_wordcloud.png', 'Question Word Cloud'),
+            ('tfidf_heatmap.png', 'TF-IDF Heatmap'),
+            ('difficulty_analysis.png', 'Difficulty Analysis'),
+            ('topic_word_heatmap.png', 'Topic Word Heatmap'),
+            ('question_complexity_trend.png', 'Question Complexity Trend')
+        ] %}
+        <a href="#" onclick="openModal('{{ url_for('static', filename='images/' + img_name) }}')" 
+           onkeypress="handleKeyPress(event, '{{ url_for('static', filename='images/' + img_name) }}')">
+            <img src="{{ url_for('static', filename='images/' + img_name) }}" alt="{{ alt_text }}">
+        </a>
+        {% endfor %}
+    </div>
+
+    <div id="imageModal" class="modal hidden">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImg" onwheel="zoom(event)">
+    </div>
+
+    <script>
+        let scale = 1;
+        let img = document.getElementById("modalImg");
+        let isDragging = false;
+        let startX, startY, imgX = 0, imgY = 0;
+
+        function handleKeyPress(event, imgSrc) {
+            if (event.key === "Enter" || event.key === " ") {
+                openModal(imgSrc);
+            }
+        }
+
+        function openModal(imgSrc) {
+            scale = 1;
+            imgX = 0;
+            imgY = 0;
+            img.style.transform = `scale(${scale}) translate(${imgX}px, ${imgY}px)`;
+            document.getElementById("imageModal").classList.remove("hidden");
+            img.src = imgSrc;
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").classList.add("hidden");
+        }
+
+        function zoom(event) {
+            event.preventDefault();
+            let zoomIntensity = 0.1;
+            scale = event.deltaY < 0 ? scale + zoomIntensity : Math.max(1, scale - zoomIntensity);
+            img.style.transform = `scale(${scale}) translate(${imgX}px, ${imgY}px)`;
+        }
+
+        img.addEventListener("mousedown", function(event) {
+            isDragging = true;
+            startX = event.clientX - imgX;
+            startY = event.clientY - imgY;
+            img.style.cursor = "grabbing";
+        });
+
+        document.addEventListener("mousemove", function(event) {
+            if (!isDragging) return;
+            imgX = event.clientX - startX;
+            imgY = event.clientY - startY;
+            img.style.transform = `scale(${scale}) translate(${imgX}px, ${imgY}px)`;
+        });
+
+        document.addEventListener("mouseup", function() {
+            isDragging = false;
+            img.style.cursor = "grab";
+        });
+    </script>
+</body>
+
+</html>
+
